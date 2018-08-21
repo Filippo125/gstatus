@@ -1,4 +1,4 @@
-
+from __future__ import print_function
 
 from glob import glob
 import sys
@@ -106,14 +106,14 @@ class Cluster(object):
 
         else:
             # no volumes in this cluster, print a message and abort
-            print "This cluster doesn't have any volumes/daemons running."
-            print "The output below shows the current nodes attached to this host.\n"
+            print( "This cluster doesn't have any volumes/daemons running.")
+            print( "The output below shows the current nodes attached to this host.\n")
 
             cmd = GlusterCommand('gluster pool list', timeout=cfg.CMD_TIMEOUT)
             cmd.run()
             for line in cmd.stdout:
-                print line
-            print
+                print(line)
+            print()
             exit(12)
 
     def get_node(self, node_string):
@@ -142,8 +142,8 @@ class Cluster(object):
         cmd.run()
 
         if cmd.rc != 0:
-            print "glusterd did not respond to a peer status request, gstatus"
-            print "can not continue.\n"
+            print( "glusterd did not respond to a peer status request, gstatus")
+            print( "can not continue.\n")
             exit(12)
 
             # define a list of elements in the xml that we're interested in
@@ -179,8 +179,8 @@ class Cluster(object):
                 # Clean up all the empty strings in the list
                 self.alias_stripped = [ele for ele in alias_list if ele != '']
 
-                print "Creating a node object with uuid %s, with names of %s"%\
-                    (node_info['uuid'], self.alias_stripped)
+                print("Creating a node object with uuid %s, with names of %s"%\
+                    (node_info['uuid'], self.alias_stripped))
             # ------------------------------------------------------------------
 
             new_node = Node(node_info['uuid'], node_info['connected'],
@@ -227,7 +227,7 @@ class Cluster(object):
             self.volume[new_volume.name] = new_volume
 
             if cfg.debug:
-                print "defineVolumes. Adding volume %s" % new_volume.name
+                print("defineVolumes. Adding volume %s" % new_volume.name)
 
             # add information about any volume options
             opt_nodes = vol_object.findall('.//option')
@@ -264,8 +264,8 @@ class Cluster(object):
                 (hostname, pathname) = brick_path.split(':')
 
                 if cfg.debug:
-                    print "defineVolumes. Adding brick %s to %s" % (brick_path,
-                                                                    new_volume.name)
+                    print("defineVolumes. Adding brick %s to %s" % (brick_path,
+                                                                    new_volume.name))
 
                 node_uuid = self.get_node(hostname)
 
@@ -274,9 +274,9 @@ class Cluster(object):
                     new_volume.node[node_uuid] = self.node[node_uuid]
 
                 except KeyError:
-                    print "Unable to associate brick %s with a peer in the cluster, possibly due" % brick_path
-                    print "to name lookup failures. If the nodes are not registered (fwd & rev)"
-                    print "to dns, add local entries for your cluster nodes in the the /etc/hosts file"
+                    print("Unable to associate brick %s with a peer in the cluster, possibly due" % brick_path)
+                    print("to name lookup failures. If the nodes are not registered (fwd & rev)")
+                    print("to dns, add local entries for your cluster nodes in the the /etc/hosts file")
                     sys.exit(16)
 
                 new_brick = Brick(brick_path, self.node[node_uuid], new_volume.name)
@@ -359,7 +359,7 @@ class Cluster(object):
                         snap_name = snap.strip()
 
                         if cfg.debug:
-                            print "defineSnapshots. Creating a snapshot instance for volume '%s' called '%s'" % (volume_name, snap_name)
+                            print("defineSnapshots. Creating a snapshot instance for volume '%s' called '%s'" % (volume_name, snap_name))
 
                         new_snapshot = Snapshot(snap_name, this_volume, volume_name)
                         this_volume.snapshot_list.append(new_snapshot)
@@ -367,7 +367,7 @@ class Cluster(object):
                     this_volume.snapshot_count = len(this_volume.snapshot_list)
 
             if cfg.debug:
-                print "defineSnapshots. Volume '%s' has %d snapshots" % (volume_name, this_volume.snapshot_count)
+                print("defineSnapshots. Volume '%s' has %d snapshots" % (volume_name, this_volume.snapshot_count))
 
     def get_version(self):
         """ Sets the current version and product identifier for this cluster """
@@ -530,10 +530,10 @@ class Cluster(object):
                     # Being unable to get a vol status for a known volume
                     # may indicate a peer transitioning to disconnected state
                     # so issue an error message and abort the script
-                    print "\n--> gstatus has been unable to query volume '" + volume_name + "'"
-                    print "\nPossible cause: cluster is currently reconverging after a node"
-                    print "has entered a disconnected state."
-                    print "\nResponse: Rerun gstatus or issue a peer status command to confirm\n"
+                    print("\n--> gstatus has been unable to query volume '" + volume_name + "'")
+                    print("\nPossible cause: cluster is currently reconverging after a node")
+                    print("has entered a disconnected state.")
+                    print("\nResponse: Rerun gstatus or issue a peer status command to confirm\n")
                     exit(16)
 
                 # -----------------------------------------------------------------------------
@@ -598,9 +598,9 @@ class Cluster(object):
 
                                 if not uuid:
                                     # tried to resolve the name but couldn't
-                                    print ("Cluster.updateState : Attempting to use a 'path' (%s) for "
+                                    print("Cluster.updateState : Attempting to use a 'path' (%s) for "
                                            "a self heal daemon that" % node_name)
-                                    print "does not correspond to a peer node, and can not continue\n"
+                                    print("does not correspond to a peer node, and can not continue\n")
                                     exit(16)
 
                                 if self.node[uuid].self_heal_enabled:
@@ -724,8 +724,8 @@ class Cluster(object):
         if cmd.rc > 0:
             # unable to get the client connectivity information
             if self.output_mode == 'console' and not cfg.no_progress_msgs:
-                print "\ngstatus has been unable to get the output of a 'vol status all clients --xml' command"
-                print "and can not continue.\n"
+                print("\ngstatus has been unable to get the output of a 'vol status all clients --xml' command")
+                print("and can not continue.\n")
             return
 
         # At this point the command worked, so we can process the results
@@ -733,7 +733,7 @@ class Cluster(object):
         try:
             xml_root = ETree.fromstring(xml_string)
         except ExpatError:
-            print "Malformed xml, try again later."
+            print("Malformed xml, try again later.")
 
         volumes = xml_root.findall('.//volume')
 
