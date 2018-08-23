@@ -53,6 +53,8 @@ class Volume(object):
         self.options = {}
         self.raw_capacity = 0
         self.raw_used = 0
+        self.quota_ctrl = False
+        self.quota_limit = []
         self.usable_capacity = 0
         self.used_capacity = 0
         self.pct_used = 0

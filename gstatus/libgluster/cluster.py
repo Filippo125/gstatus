@@ -238,7 +238,6 @@ class Cluster(object):
                     elif n.tag == 'value':
                         value = n.text
                         new_volume.options[key] = value
-
                         # Protocols are enabled by default, so we look
                         # for the volume tuning options that turn them
                         # off
@@ -249,6 +248,23 @@ class Cluster(object):
                         elif key == 'nfs.disable':
                             if value in ['on', 'true']:
                                 new_volume.protocol['NFS'] = 'off'
+                        elif key == 'features.quota':
+                            if value in ['on','true']:
+                                new_volume.quota_ctrl = True
+                                vcmd = GlusterCommand("gluster vol quota %s list --xml" % new_volume.name, timeout=cfg.CMD_TIMEOUT)
+                                vcmd.run()
+                                vxml_string = ''.join(cmd.stdout)
+                                vxml_root = ETree.fromstring(xml_string)
+                                limit_elements = xml_root.findall('.//limit')
+                                for elem in limit_elements:
+                                    tmp_limit = {'path': elem.find('./path').text,
+                                                                    'used': elem.find('./used_space').text,
+                                                                    'available': elem.find('./avail_space').text }
+                                    new_volume.quota_limit.append(tmp_limit)
+                                    if tmp_limit['path'] == '/':
+                                        new_volume.usable_capacity = tmp_limit['available']
+                                        new_volume.used_capacity = tmp_limit['used']
+
 
             # get bricks listed against this volume, and create the Brick object(s)
             brick_nodes = vol_object.findall('.//brick')

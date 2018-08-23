@@ -18,7 +18,7 @@ class strip_py_ext(distutils.command.install_scripts.install_scripts):
 
 
 setup(
-    name = "gstatus",
+    name = "gstatus2",
     version= "1.00",
     description= "Show the current health of the components in a glusterfs Trusted Storage Pool (fork from https://github.com/pcuzner/gstatus)",
     long_description = long_description,
