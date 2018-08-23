@@ -126,7 +126,6 @@ def log_mode():
             if len(volume_list) == 0 or vol_name in volume_list:
                 vol = cluster.volume[vol_name]
                 (up_bricks, all_bricks) = vol.brick_states()
-
                 task_list_str = ", ".join(vol.task_list) if vol.task_list else 'None'
                 tmp_vol['name'] = vol_name
                 tmp_vol['status'] = vol.volume_state.upper()
@@ -151,7 +150,7 @@ def log_mode():
                                             'tcp_conn': vol.num_connections }
                 #print("\t" + " " * 17 + "Tasks Active: %s" % task_list_str)
                 volume_list_output.append(tmp_vol)
-        print(json.dumps(tmp_vol,indent=DEBUG_INDENT))
+        print(json.dumps(volume_list_output,indent=DEBUG_INDENT))
     elif state_request:
         general = { 'nodes_active': cluster.nodes_active,
                    'nodes_total': cluster.node_count,
