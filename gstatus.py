@@ -134,6 +134,8 @@ def log_mode():
                 tmp_vol['volume_type'] = vol.typeStr
                 tmp_vol['capacity_used'] = vol.used_capacity
                 tmp_vol['capacity_usable'] = vol.usable_capacity
+                tmp_vol['quota_ctrl'] = vol.quota_ctrl
+                tmp_vol['quota_limit'] = vol.quota_limit
 
                 tmp_vol['snapshot'] = { 'available': cluster.snapshot_capable,
                                         'count': vol.snapshot_count,

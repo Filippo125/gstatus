@@ -254,8 +254,8 @@ class Cluster(object):
                                 vcmd = GlusterCommand("gluster vol quota %s list --xml" % new_volume.name, timeout=cfg.CMD_TIMEOUT)
                                 vcmd.run()
                                 vxml_string = ''.join(cmd.stdout)
-                                vxml_root = ETree.fromstring(xml_string)
-                                limit_elements = xml_root.findall('.//limit')
+                                vxml_root = ETree.fromstring(vxml_string)
+                                limit_elements = vxml_root.findall('.//limit')
                                 for elem in limit_elements:
                                     tmp_limit = {'path': elem.find('./path').text,
                                                                     'used': elem.find('./used_space').text,
